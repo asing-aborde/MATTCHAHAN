@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="card">
+
+        <h1>Add Student</h1>
+
+        <form method="POST">
+
+            <label>Name</label><br>
+            <input type="text" name="name" required>
+            <br><br>
+
+            <label>Grade Level</label><br>
+            <input type="text" name="grade_level" required>
+            <br><br>
+
+            <label>Section</label><br>
+                <select name="section_id">
+                {% for sec in sections %}
+                <option value="{{ sec[0] }}">
+                Grade {{ sec[1] }} - {{ sec[2] }}
+                </option>
+                {% endfor %}
+                </select>
+            <br><br>
+
+            <button type="submit">Save</button>
+
+        </form>
+
+        <br>
+        <a href="/students">← Back to Students List</a>
+
+    </div>
+
+</div>
+
+{% endblock %}

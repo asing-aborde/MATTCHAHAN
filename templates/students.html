@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="card">
+
+        <h1>Students List</h1>
+
+        <a href="/add-student">➕ Add Student</a>
+
+        <br><br>
+
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Grade Level</th>
+                <th>Section</th>
+                <th>Actions</th>
+            </tr>
+
+            {% for s in students %}
+            <tr>
+                <td>{{ s[0] }}</td>
+                <td>{{ s[1] }}</td>
+                <td>{{ s[2] }}</td>
+                <td>Grade {{ s[3] }} - {{ s[4] }}</td>
+                <td>
+                    <a href="/edit-student/{{ s[0] }}">Edit</a> |
+                    <a href="/delete-student/{{ s[0] }}">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <br>
+        <a href="/admin-dashboard">← Back to Dashboard</a>
+
+    </div>
+
+</div>
+
+{% endblock %}

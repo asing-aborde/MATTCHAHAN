@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Edit Section</h2>
+
+<form method="POST">
+
+    <label>Grade Level</label><br>
+    <input name="grade_level" value="{{ section[1] }}"><br><br>
+
+    <label>Section Name</label><br>
+    <input name="section_name" value="{{ section[2] }}"><br><br>
+
+    <button type="submit">Update</button>
+
+</form>
+
+<br>
+<a href="/sections">← Back</a>
+
+{% endblock %}
