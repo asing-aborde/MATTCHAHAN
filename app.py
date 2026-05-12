@@ -20,6 +20,22 @@ db = mysql.connector.connect(
 
 cursor = db.cursor(buffered=True)
 
+# 🔥 Cleanup orphaned teacher records on startup
+def cleanup_orphaned_teachers():
+    try:
+        cursor.execute("""
+            DELETE FROM teachers 
+            WHERE user_id NOT IN (SELECT id FROM users WHERE role='teacher')
+        """)
+        db.commit()
+        deleted = cursor.rowcount
+        if deleted > 0:
+            print(f"✓ Cleaned up {deleted} orphaned teacher record(s)")
+    except Exception as e:
+        print(f"Cleanup error: {e}")
+
+cleanup_orphaned_teachers()
+
 @app.route('/')
 def home():
     return "School System is Running!"
@@ -32,12 +48,28 @@ def teachers():
     if not is_admin():
         return "Access Denied: Admin Only"
 
-    cursor.execute("SELECT * FROM teachers")
+    # 🔥 Show ONLY synced teachers (teachers with valid user accounts)
+    cursor.execute("""
+        SELECT 
+            t.id,
+            u.id as user_id,
+            u.username,
+            t.name,
+            t.email,
+            t.department
+        FROM teachers t
+        INNER JOIN users u ON t.user_id = u.id
+        WHERE u.role = 'teacher'
+        ORDER BY t.name ASC
+    """)
     data = cursor.fetchall()
     return render_template("teachers.html", teachers=data)
 
 @app.route('/add-teacher', methods=['GET', 'POST'])
 def add_teacher():
+    if not login_required() or not is_admin():
+        return redirect('/login')
+        
     if request.method == 'POST':
         name = request.form['name']
         email = request.form['email']
@@ -45,32 +77,19 @@ def add_teacher():
         username = request.form['username']
         password = request.form['password']
 
-        # 1. Insert teacher
-        cursor.execute("""
-            INSERT INTO teachers (name, email, department)
-            VALUES (%s, %s, %s)
-        """, (name, email, department))
-
-        db.commit()
-
-        # 2. Create user account
+        # 1. Create user account FIRST (so we have the user_id)
         cursor.execute("""
             INSERT INTO users (username, password, role)
             VALUES (%s, %s, 'teacher')
         """, (username, password))
-
         db.commit()
-
-        # 3. GET the user ID that was just created
         user_id = cursor.lastrowid
 
-        # 4. LINK user to teacher (THIS WAS MISSING)
+        # 2. Insert teacher with user_id linked immediately
         cursor.execute("""
-            UPDATE teachers
-            SET user_id = %s
-            WHERE email = %s
-        """, (user_id, email))
-
+            INSERT INTO teachers (name, email, department, user_id)
+            VALUES (%s, %s, %s, %s)
+        """, (name, email, department, user_id))
         db.commit()
 
         return redirect('/teachers')
@@ -82,11 +101,22 @@ def delete_teacher(id):
     if not login_required():
         return redirect('/login')
 
-    # Step 1: delete relationships first
+    # Step 1: get user_id first
+    cursor.execute("SELECT user_id FROM teachers WHERE id=%s", (id,))
+    result = cursor.fetchone()
+    if not result:
+        return redirect('/teachers')
+    user_id = result[0]
+
+    # Step 2: delete relationships first
     cursor.execute("DELETE FROM teacher_subject WHERE teacher_id=%s", (id,))
 
-    # Step 2: delete teacher
+    # Step 3: delete teacher record
     cursor.execute("DELETE FROM teachers WHERE id=%s", (id,))
+
+    # Step 4: delete user account (cascade delete)
+    if user_id:
+        cursor.execute("DELETE FROM users WHERE id=%s", (user_id,))
 
     db.commit()
     return redirect('/teachers')
@@ -158,8 +188,16 @@ def add_student():
 def delete_student(id):
     if not login_required():
         return redirect('/login')
-    sql = "DELETE FROM students WHERE id=%s"
-    cursor.execute(sql, (id,))
+    
+    # Step 1: Delete grades for this student
+    cursor.execute("DELETE FROM grades WHERE student_id=%s", (id,))
+    
+    # Step 2: Delete enrollments for this student
+    cursor.execute("DELETE FROM enrollments WHERE student_id=%s", (id,))
+    
+    # Step 3: Delete the student
+    cursor.execute("DELETE FROM students WHERE id=%s", (id,))
+    
     db.commit()
     return redirect('/students')
 
