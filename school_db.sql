@@ -122,7 +122,6 @@ CREATE TABLE `students` (
 --
 
 INSERT INTO `students` (`id`, `name`, `grade_level`, `section`, `section_id`) VALUES
-(3, 'onyok', '8', 'sipag', NULL),
 (4, 'kahlil', '9', NULL, 1),
 (5, 'me', '9', NULL, 1);
 

@@ -388,16 +388,39 @@ def teacher_dashboard():
 
 @app.route('/admin-dashboard')
 def admin_dashboard():
-
     if 'user_id' not in session:
         return redirect('/login')
 
     if session.get('role') != 'admin':
         return "Access Denied"
     
-    print("SESSION:", session)
+    # Get counts
+    cursor.execute("SELECT COUNT(*) FROM teachers")
+    teacher_count = cursor.fetchone()[0]
 
-    return render_template("admin_dashboard.html")
+    cursor.execute("SELECT COUNT(*) FROM students")
+    student_count = cursor.fetchone()[0]
+
+    cursor.execute("SELECT COUNT(*) FROM subjects")
+    subject_count = cursor.fetchone()[0]
+
+    cursor.execute("SELECT COUNT(*) FROM sections")
+    section_count = cursor.fetchone()[0]
+
+    # Get pending grade reviews count
+    cursor.execute("""
+        SELECT COUNT(DISTINCT subject_id) 
+        FROM grades 
+        WHERE status = 'submitted'
+    """)
+    pending_reviews = cursor.fetchone()[0]
+
+    return render_template("admin_dashboard.html",
+                           teacher_count=teacher_count,
+                           student_count=student_count,
+                           subject_count=subject_count,
+                           section_count=section_count,
+                           pending_reviews=pending_reviews)
 
 @app.route('/input-grades/<int:subject_id>', methods=['GET', 'POST'])
 def input_grades(subject_id):

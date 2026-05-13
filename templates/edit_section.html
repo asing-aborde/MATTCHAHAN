@@ -2,21 +2,43 @@
 
 {% block content %}
 
-<h2>Edit Section</h2>
+<div class="container">
 
-<form method="POST">
+    <div class="card card-form">
 
-    <label>Grade Level</label><br>
-    <input name="grade_level" value="{{ section[1] }}"><br><br>
+        <h1>Edit Section</h1>
 
-    <label>Section Name</label><br>
-    <input name="section_name" value="{{ section[2] }}"><br><br>
+        <form method="POST">
 
-    <button type="submit">Update</button>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Grade Level</label>
+                    <select name="grade_level" required>
+                        <option value="7" {% if section[1] == '7' %}selected{% endif %}>Grade 7</option>
+                        <option value="8" {% if section[1] == '8' %}selected{% endif %}>Grade 8</option>
+                        <option value="9" {% if section[1] == '9' %}selected{% endif %}>Grade 9</option>
+                        <option value="10" {% if section[1] == '10' %}selected{% endif %}>Grade 10</option>
+                    </select>
+                </div>
+            </div>
 
-</form>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Section Name</label>
+                    <input type="text" name="section_name" value="{{ section[2] }}" required>
+                </div>
+            </div>
 
-<br>
-<a href="/sections">← Back</a>
+            <div class="form-actions">
+                <button type="submit">Update</button>
+            </div>
+
+        </form>
+
+        <a href="/sections">← Back</a>
+
+    </div>
+
+</div>
 
 {% endblock %}

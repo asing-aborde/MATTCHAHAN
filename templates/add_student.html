@@ -4,35 +4,52 @@
 
 <div class="container">
 
-    <div class="card">
+    <div class="card card-form">
 
         <h1>Add Student</h1>
 
         <form method="POST">
 
-            <label>Name</label><br>
-            <input type="text" name="name" required>
-            <br><br>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" name="name" required>
+                </div>
+            </div>
 
-            <label>Grade Level</label><br>
-            <input type="text" name="grade_level" required>
-            <br><br>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Grade Level</label>
+                    <select name="grade_level" required>
+                        <option value="" disabled selected>Select Grade Level</option>
+                        <option value="7">Grade 7</option>
+                        <option value="8">Grade 8</option>
+                        <option value="9">Grade 9</option>
+                        <option value="10">Grade 10</option>
+                    </select>
+                </div>
+            </div>
 
-            <label>Section</label><br>
-                <select name="section_id">
-                {% for sec in sections %}
-                <option value="{{ sec[0] }}">
-                Grade {{ sec[1] }} - {{ sec[2] }}
-                </option>
-                {% endfor %}
-                </select>
-            <br><br>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Section</label>
+                    <select name="section_id" required>
+                        <option value="" disabled selected>Select Section</option>
+                        {% for sec in sections %}
+                        <option value="{{ sec[0] }}">
+                            Grade {{ sec[1] }} - {{ sec[2] }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
 
-            <button type="submit">Save</button>
+            <div class="form-actions">
+                <button type="submit">Save</button>
+            </div>
 
         </form>
 
-        <br>
         <a href="/students">← Back to Students List</a>
 
     </div>

@@ -67,7 +67,8 @@ body {
 
 /* ── Container ── */
 .container {
-  max-width: 960px;
+  max-width: 100%;
+  width: 100%;
   margin: 0 auto;
   padding: 40px 24px 60px;
 }
@@ -439,7 +440,7 @@ a[href*="logout"]:hover {
 }
 
 /* ── Login Page ── */
-body:has(form input[name="username"]) .container {
+body:has(form input[name="username"]):not(:has(.form-page)) .container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -449,7 +450,7 @@ body:has(form input[name="username"]) .container {
   padding-bottom: 0;
 }
 
-body:has(form input[name="username"]) .container > h1 {
+body:has(form input[name="username"]):not(:has(.form-page)) .container > h1 {
   font-family: 'Playfair Display', serif;
   font-size: 1.5rem;
   color: var(--navy);
@@ -459,11 +460,11 @@ body:has(form input[name="username"]) .container > h1 {
   display: block;
 }
 
-body:has(form input[name="username"]) .container > h1::after {
+body:has(form input[name="username"]):not(:has(.form-page)) .container > h1::after {
   display: none;
 }
 
-body:has(form input[name="username"]) .container > h3 {
+body:has(form input[name="username"]):not(:has(.form-page)) .container > h3 {
   font-size: 0.875rem;
   color: var(--text-muted);
   text-align: center;
@@ -472,7 +473,7 @@ body:has(form input[name="username"]) .container > h3 {
   font-family: 'DM Sans', sans-serif;
 }
 
-body:has(form input[name="username"]) form {
+body:has(form input[name="username"]):not(:has(.form-page)) form {
   background: #ffffff;
   border: 1px solid var(--cream-border);
   border-radius: var(--radius-lg);
@@ -484,7 +485,7 @@ body:has(form input[name="username"]) form {
   overflow: hidden;
 }
 
-body:has(form input[name="username"]) form::before {
+body:has(form input[name="username"]):not(:has(.form-page)) form::before {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0;
@@ -492,7 +493,7 @@ body:has(form input[name="username"]) form::before {
   background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--navy-light));
 }
 
-body:has(form input[name="username"]) form h2 {
+body:has(form input[name="username"]):not(:has(.form-page)) form h2 {
   font-family: 'Playfair Display', serif;
   font-size: 1.5rem;
   color: var(--navy);
@@ -500,17 +501,16 @@ body:has(form input[name="username"]) form h2 {
   text-align: center;
 }
 
-body:has(form input[name="username"]) form input {
+body:has(form input[name="username"]):not(:has(.form-page)) form input {
   margin-bottom: 16px;
 }
 
-body:has(form input[name="username"]) form button {
+body:has(form input[name="username"]):not(:has(.form-page)) form button {
   width: 100%;
   margin-top: 8px;
   padding: 13px;
   font-size: 1rem;
 }
-
 /* ── Filter Form (Grade Review) ── */
 form[method="GET"] {
   display: flex;
@@ -600,6 +600,89 @@ body > .container > table {
 .flash-success { background: var(--success-bg); color: var(--success); border-left: 4px solid var(--success); }
 .flash-error   { background: var(--danger-bg);  color: var(--danger);  border-left: 4px solid var(--danger); }
 .flash-warning { background: var(--warning-bg); color: var(--warning); border-left: 4px solid var(--gold); }
+
+
+/* -- Dashboard Admin --*/
+.stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.stat-card {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.stat-number {
+    display: block;
+    font-size: 2em;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.stat-label {
+    display: block;
+    color: #666;
+    font-size: 0.9em;
+    margin-top: 5px;
+}
+
+.dashboard-section {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.dashboard-section h2 {
+    margin-top: 0;
+    font-size: 1.2em;
+    color: #2c3e50;
+}
+
+.btn-primary {
+    display: inline-block;
+    background: #3498db;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.btn-primary:hover {
+    background: #2980b9;
+}
+
+.quick-links {
+    list-style: none;
+    padding: 0;
+}
+
+.quick-links li {
+    margin: 8px 0;
+}
+
+.quick-links a {
+    color: #3498db;
+    text-decoration: none;
+}
+
+.quick-links a:hover {
+    text-decoration: underline;
+}
+
+.text-muted {
+    color: #888;
+}
 
 /* ── Responsive ── */
 @media (max-width: 640px) {
@@ -751,11 +834,258 @@ table tbody tr:nth-child(8)  { animation-delay: 0.25s; }
     border-color: rgba(192, 57, 43, 0.2);
     padding-left: 14px;
 }
-
-/* ── Main Content ── */
+/*-- MAIN CONTENT--*/
 .main-content {
     flex: 1;
-    padding: 40px 36px;
+    padding: 24px 40px;
     background: var(--cream);
     overflow-y: auto;
+    width: 100%;
+    min-width: 0;
+}
+
+/* ── Form Pages (Add Teacher, Add Student, etc.) ── */
+.form-page {
+    width: 100%;
+    max-width: 100%;
+    padding: 0;
+}
+
+.form-page h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 3px solid var(--gold);
+}
+
+/* Override container max-width for form pages */
+.main-content > .container:has(.form-page),
+.main-content > .container {
+    max-width: 100%;
+    width: 100%;
+    padding: 20px 0;
+}
+
+/* The big card that holds the form */
+.card-form {
+    width: 100%;
+    max-width: 100%;
+    padding: 40px;
+}
+
+.card-form form {
+    width: 100%;
+}
+
+/* 2-column grid layout */
+.card-form .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 40px;
+    margin-bottom: 20px;
+}
+
+.card-form .form-group {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.card-form label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-mid);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+}
+
+.card-form input {
+    width: 100%;
+    padding: 14px 16px;
+    font-size: 1rem;
+    background: var(--cream);
+    border: 1.5px solid var(--cream-border);
+    border-radius: var(--radius-sm);
+}
+
+.card-form input:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(232, 163, 32, 0.15);
+    background: #ffffff;
+    outline: none;
+}
+
+/* Submit button area */
+.card-form .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid var(--cream-border);
+}
+
+.card-form button[type="submit"] {
+    padding: 12px 40px;
+    font-size: 1rem;
+}
+
+.card-form > a {
+    display: inline-block;
+    margin-top: 16px;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    text-decoration: none;
+}
+
+.card-form > a:hover {
+    color: var(--navy);
+}
+
+/* ── Fix: Don't let login page styles affect add teacher ── */
+/* Override the body:has selector that was catching all forms with username */
+body:has(.form-page) .container {
+    display: block;
+    min-height: auto;
+    padding: 40px 24px 60px;
+}
+
+body:has(.form-page) form {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    max-width: 100%;
+    box-shadow: none;
+}
+
+body:has(.form-page) form::before {
+    display: none;
+}
+
+/*FOR ADD STUDENT*/
+
+* ── Form Rows (tight spacing) ── */
+.card-form .form-row {
+    margin-bottom: 12px;
+}
+
+.card-form .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px; /* Small gap between label and input */
+}
+
+.card-form label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-mid);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0; /* Remove extra margin */
+}
+
+.card-form input,
+.card-form select {
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 1rem;
+    background: var(--cream);
+    border: 1.5px solid var(--cream-border);
+    border-radius: var(--radius-sm);
+    margin-top: 2px; /* Tiny gap from label */
+}
+
+.card-form select:focus,
+.card-form input:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(232, 163, 32, 0.15);
+    background: #ffffff;
+    outline: none;
+}
+
+/* Placeholder option styling */
+.card-form select option:first-child {
+    color: var(--text-muted);
+}
+
+.card-form .form-actions {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 16px;
+}
+
+.card-form button[type="submit"] {
+    padding: 10px 32px;
+}
+
+/* ── Form Rows (tight spacing) FOR ADD SECTION── */
+.card-form .form-row {
+    margin-bottom: 12px;
+}
+
+.card-form .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.card-form label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-mid);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0;
+}
+
+.card-form input,
+.card-form select {
+    width: 100%;
+    padding: 12px 14px;
+    padding-right: 36px;
+    font-size: 1rem;
+    background-color: var(--cream);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%234A5068' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    border: 1.5px solid var(--cream-border);
+    border-radius: var(--radius-sm);
+    margin-top: 2px;
+    cursor: pointer;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+/* Remove arrow from text inputs */
+.card-form input[type="text"] {
+    background-image: none;
+    padding-right: 14px;
+    cursor: text;
+}
+
+.card-form input:focus,
+.card-form select:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(232, 163, 32, 0.15);
+    background-color: #ffffff;
+    outline: none;
+}
+
+.card-form select option:first-child {
+    color: var(--text-muted);
+}
+
+.card-form .form-actions {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 16px;
+}
+
+.card-form button[type="submit"] {
+    padding: 10px 32px;
 }
