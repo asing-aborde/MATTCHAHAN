@@ -14,7 +14,7 @@ def is_admin():
 db = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="",
+    password="root123",
     database="school_db"
 )
 
@@ -797,7 +797,7 @@ def admin_grade_review():
     if conditions:
         query += " WHERE " + " AND ".join(conditions)
 
-    query += " GROUP BY subjects.id, grades.status"
+    query += " GROUP BY subjects.id, teachers.name, grades.status"
 
     cursor.execute(query, params)
     data = cursor.fetchall()
