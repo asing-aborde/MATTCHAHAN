@@ -83,14 +83,14 @@ body > .container > h1,
   margin-bottom: 24px;
   letter-spacing: -0.02em;
   position: relative;
-  display: inline-block;
+  display: block;  /* <-- CHANGED from inline-block */
 }
 
 body > .container > h1::after,
 .container > h1:first-child::after {
   content: '';
   display: block;
-  width: 48px;
+  width: 100%;  /* <-- CHANGED from 48px */
   height: 4px;
   background: var(--gold);
   border-radius: 2px;
@@ -1088,4 +1088,94 @@ body:has(.form-page) form::before {
 
 .card-form button[type="submit"] {
     padding: 10px 32px;
+}
+/*IN STUDENTS PART*/
+.filter-form {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 16px 0;
+    padding: 12px 16px;
+    background: var(--cream);
+    border: 1px solid var(--cream-border);
+    border-radius: var(--radius-sm);
+    width: fit-content;
+}
+
+.filter-form label {
+    margin-bottom: 0;
+    font-size: 0.875rem;
+}
+
+.filter-form select {
+    width: auto;
+    min-width: 200px;
+    padding: 8px 32px 8px 12px;
+    font-size: 0.875rem;
+}
+
+.students-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+/* ── Students Header (Add + Filter side by side) ── */
+.students-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+/* Add Student button */
+.btn-add {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: var(--navy);
+    color: var(--gold-light);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    transition: all 0.2s ease;
+}
+
+.btn-add:hover {
+    background: var(--navy-light);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Filter form */
+.filter-form {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    background: var(--cream);
+    border: 1px solid var(--cream-border);
+    border-radius: var(--radius-sm);
+}
+
+.filter-form label {
+    margin-bottom: 0;
+    font-size: 0.875rem;
+    text-transform: none;
+    letter-spacing: normal;
+}
+
+.filter-form select {
+    width: auto;
+    min-width: 200px;
+    padding: 8px 32px 8px 12px;
+    font-size: 0.875rem;
+    cursor: pointer;
 }

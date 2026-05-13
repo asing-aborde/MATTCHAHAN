@@ -149,16 +149,32 @@ def students():
     if not is_admin():
         return "Access Denied: Admin Only"
 
-    cursor.execute("""
-        SELECT students.id, students.name, students.grade_level,
-               sections.grade_level, sections.section_name
-        FROM students
-        JOIN sections ON students.section_id = sections.id
-    """)
+    # Get filter parameter
+    section_filter = request.args.get('section')
+
+    if section_filter:
+        cursor.execute("""
+            SELECT students.id, students.name, students.grade_level,
+                   sections.grade_level, sections.section_name
+            FROM students
+            JOIN sections ON students.section_id = sections.id
+            WHERE students.section_id = %s
+        """, (section_filter,))
+    else:
+        cursor.execute("""
+            SELECT students.id, students.name, students.grade_level,
+                   sections.grade_level, sections.section_name
+            FROM students
+            JOIN sections ON students.section_id = sections.id
+        """)
 
     data = cursor.fetchall()
 
-    return render_template("students.html", students=data)
+    # Load all sections for the filter dropdown
+    cursor.execute("SELECT * FROM sections")
+    sections = cursor.fetchall()
+
+    return render_template("students.html", students=data, sections=sections)
 
 @app.route('/add-student', methods=['GET', 'POST'])
 def add_student():
@@ -205,21 +221,27 @@ def delete_student(id):
 def edit_student(id):
     if not login_required():
         return redirect('/login')
+    
     if request.method == 'POST':
         name = request.form['name']
         grade_level = request.form['grade_level']
-        section = request.form['section']
+        section_id = request.form['section_id']
 
-        sql = "UPDATE students SET name=%s, grade_level=%s, section=%s WHERE id=%s"
-        cursor.execute(sql, (name, grade_level, section, id))
+        sql = "UPDATE students SET name=%s, grade_level=%s, section_id=%s WHERE id=%s"
+        cursor.execute(sql, (name, grade_level, section_id, id))
         db.commit()
 
         return redirect('/students')
 
+    # Get student data
     cursor.execute("SELECT * FROM students WHERE id=%s", (id,))
     student = cursor.fetchone()
 
-    return render_template("edit_student.html", student=student)
+    # Get all sections for dropdown
+    cursor.execute("SELECT * FROM sections")
+    sections = cursor.fetchall()
+
+    return render_template('edit_student.html', student=student, sections=sections)
 
 @app.route('/subjects')
 def subjects():
@@ -294,12 +316,16 @@ def assign():
     cursor.execute("SELECT * FROM teachers")
     teachers = cursor.fetchall()
 
-    cursor.execute("SELECT * FROM subjects")
+    # 🔥 FILTERED — only these 8 subjects
+    cursor.execute("""
+    SELECT MIN(id) as id, subject_name 
+                    FROM subjects 
+                    GROUP BY subject_name 
+                    ORDER BY subject_name
+                    """)
     subjects = cursor.fetchall()
 
-    return render_template("assign.html",
-                           teachers=teachers,
-                           subjects=subjects)
+    return render_template("assign.html", teachers=teachers,subjects=subjects)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -772,8 +798,13 @@ def assign_section_subject():
     cursor.execute("SELECT * FROM sections")
     sections = cursor.fetchall()
 
-    # load subjects
-    cursor.execute("SELECT * FROM subjects")
+    # 🔥 Get one ID per subject name (no duplicates)
+    cursor.execute("""
+        SELECT MIN(id) as id, subject_name 
+        FROM subjects 
+        GROUP BY subject_name 
+        ORDER BY subject_name
+    """)
     subjects = cursor.fetchall()
 
     return render_template(
